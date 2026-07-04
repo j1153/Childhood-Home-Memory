@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events; // 必须添加这个命名空间来支持 UnityEvent
 using System.Collections;
 
 public class RelativeScaler : MonoBehaviour
@@ -11,6 +12,9 @@ public class RelativeScaler : MonoBehaviour
 
     private float duration = 1.0f; // 固定时长 1s
 
+    [Header("事件回调")]
+    public UnityEvent OnComplete;
+    
     public void ScaleUp()
     {
         StopAllCoroutines();
@@ -39,6 +43,11 @@ public class RelativeScaler : MonoBehaviour
             yield return null;
         }
 
+        // 确保最终比例准确无误
         transform.localScale = targetScale;
+
+        // 缩放完成后触发回调
+        // 使用 ?. 可以防止 OnComplete 没有绑定事件时抛出空引用异常
+        OnComplete?.Invoke();
     }
 }
